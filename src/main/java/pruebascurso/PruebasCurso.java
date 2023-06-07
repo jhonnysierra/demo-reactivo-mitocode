@@ -12,6 +12,20 @@ import java.util.List;
 public class PruebasCurso {
     private static final Logger log = LoggerFactory.getLogger(PruebasCurso.class);
 
+    private Flux<Persona> personasFlux;
+
+    public PruebasCurso() {
+        List<Persona> personas1 = new ArrayList<>();
+        personas1.add(Persona.builder()
+                .idPersona(1)
+                .nombre("Jhonny").build());
+        personas1.add(Persona.builder()
+                .idPersona(2)
+                .nombre("Juan").build());
+
+        personasFlux = Flux.fromIterable(personas1);
+    }
+
     public void combinaciones() {
         List<Persona> personas1 = new ArrayList<>();
         personas1.add(Persona.builder()
@@ -60,7 +74,37 @@ public class PruebasCurso {
                 .nombre("Laura").build());
 
         Mono.zip(monoPersona1, monoPersona2)
-                .subscribe(x-> log.info(x.getT1().toString()));
+                .subscribe(x -> log.info(x.getT1().toString()));
     }
 
+    public void convertirFluxMono() {
+        /*
+         * Al convertir de Flux a Mono se produce un unico elemento que contiene
+         * todos los elementos de la lista en un aray
+         */
+
+        personasFlux
+                .subscribe(x -> log.info(x.toString()));
+
+        personasFlux.collectList()
+                .subscribe(x -> {
+                            log.info(String.format("Flux a Mono: %s", x.toString()));
+                            log.info(String.format("Flux a Mono: Tamaño %s", x.size()));
+                        }
+                );
+    }
+
+    public void opeTransformacion() {
+        log.info("Operadores de transformación");
+
+        personasFlux
+                .map(x -> x.getIdPersona() + 1)
+                .subscribe(x -> log.info(x.toString()));
+
+        personasFlux.flatMap(x -> {
+                            x.setIdPersona(x.getIdPersona() + 1);
+                            return Flux.just(x);
+                        })
+                .subscribe(x -> log.info(x.toString()));
+    }
 }
