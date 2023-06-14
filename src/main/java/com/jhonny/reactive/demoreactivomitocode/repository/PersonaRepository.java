@@ -1,6 +1,7 @@
 package com.jhonny.reactive.demoreactivomitocode.repository;
 
 import com.jhonny.reactive.demoreactivomitocode.model.Persona;
+import com.jhonny.reactive.demoreactivomitocode.model.PersonaDTO;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

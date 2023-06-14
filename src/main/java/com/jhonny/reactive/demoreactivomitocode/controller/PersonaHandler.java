@@ -33,8 +33,8 @@ public class PersonaHandler {
 
     public Mono<ServerResponse> listenPATCHModificarPersona(ServerRequest serverRequest) {
 
-        return serverRequest.bodyToMono(Persona.class)
-                //.map(converterPersona::convertirPersonaDtoAPersona)
+        return serverRequest.bodyToMono(PersonaDTO.class)
+                .map(converterPersona::convertirPersonaDtoAPersona)
                 .flatMap(persona -> ServerResponse
                         .ok()
                         .contentType(MediaType.APPLICATION_JSON)

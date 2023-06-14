@@ -1,6 +1,7 @@
 package com.jhonny.reactive.demoreactivomitocode.service;
 
 import com.jhonny.reactive.demoreactivomitocode.model.Persona;
+import com.jhonny.reactive.demoreactivomitocode.model.PersonaDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class PersonaServiceImpl implements PersonaRepository {
         return Mono.just(persona)
                 .map(per -> {
                     per.setNombre(persona.getNombre() + " Modificado");
-                    log.info(String.format("Se ha actualizado el registry %s", per.toString()));
+                    log.info(String.format("Se ha actualizado el registro %s", per.toString()));
                     return per;
                 });
     }
