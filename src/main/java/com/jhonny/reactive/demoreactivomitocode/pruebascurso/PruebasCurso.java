@@ -1,6 +1,7 @@
-package pruebascurso;
+package com.jhonny.reactive.demoreactivomitocode.pruebascurso;
 
-import model.Persona;
+import com.jhonny.reactive.demoreactivomitocode.model.Persona;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -12,7 +13,7 @@ import java.util.List;
 public class PruebasCurso {
     private static final Logger log = LoggerFactory.getLogger(PruebasCurso.class);
 
-    private Flux<Persona> personasFlux;
+    private final Flux<Persona> personasFlux;
 
     public PruebasCurso() {
         List<Persona> personas1 = new ArrayList<>();
@@ -97,14 +98,41 @@ public class PruebasCurso {
     public void opeTransformacion() {
         log.info("Operadores de transformación");
 
+
+        personasFlux.flatMap(x -> {
+            x.setIdPersona(x.getIdPersona() + 1);
+            x.setNombre(x.getNombre() + " Sierra");
+            return Flux.just(x);
+        }).subscribe(x -> log.info(x.toString()));
+
         personasFlux
                 .map(x -> x.getIdPersona() + 1)
                 .subscribe(x -> log.info(x.toString()));
 
-        personasFlux.flatMap(x -> {
-                            x.setIdPersona(x.getIdPersona() + 1);
-                            return Flux.just(x);
-                        })
-                .subscribe(x -> log.info(x.toString()));
+        log.info("Flux cargado en el void");
+        personasFlux.subscribe(x -> log.info(x.toString()));
+
+        //Operaciones con Mono
+        log.info("Operaciones de transformacón con Mono Map");
+
+        Mono.just(Persona.builder()
+                .idPersona(7)
+                .nombre("Jhon").build())
+                .map(persona -> persona.getNombre() + " Map")
+                .subscribe(log::info);
+
+        log.info("Operaciones de transformación con Mono FlatMap");
+
+        Mono.just(Persona.builder()
+                        .idPersona(7)
+                        .nombre("Jhon").build())
+                .flatMap(PruebasCurso::getPersonaMono)
+                .subscribe(result-> log.info(result.toString()));
+    }
+
+    @NotNull
+    private static Mono<Persona> getPersonaMono(Persona persona) {
+        persona.setNombre(persona.getNombre() + " FlatMap");
+        return Mono.just(persona);
     }
 }
