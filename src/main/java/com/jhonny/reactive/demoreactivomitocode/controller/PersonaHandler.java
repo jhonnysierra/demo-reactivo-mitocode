@@ -1,5 +1,7 @@
 package com.jhonny.reactive.demoreactivomitocode.controller;
 
+import com.jhonny.reactive.demoreactivomitocode.model.PersonaDTO;
+import com.jhonny.reactive.demoreactivomitocode.util.ConverterPersona;
 import lombok.RequiredArgsConstructor;
 import com.jhonny.reactive.demoreactivomitocode.model.Persona;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import java.net.URI;
 public class PersonaHandler {
 
     private final PersonaRepository personaRepository;
+    private final ConverterPersona converterPersona;
 
     public Mono<ServerResponse> listenPOSTRegistrarPersona(ServerRequest serverRequest) {
 
@@ -29,13 +32,13 @@ public class PersonaHandler {
     }
 
     public Mono<ServerResponse> listenPATCHModificarPersona(ServerRequest serverRequest) {
-        return ServerResponse
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(personaRepository.modificar(Persona.builder()
-                        .idPersona(1)
-                        .nombre("Jhonny Sierra")
-                        .build()), Persona.class);
+
+        return serverRequest.bodyToMono(Persona.class)
+                //.map(converterPersona::convertirPersonaDtoAPersona)
+                .flatMap(persona -> ServerResponse
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(personaRepository.modificar(persona), Persona.class));
     }
 
     public Mono<ServerResponse> listenGETistarPersonas(ServerRequest serverRequest) {
