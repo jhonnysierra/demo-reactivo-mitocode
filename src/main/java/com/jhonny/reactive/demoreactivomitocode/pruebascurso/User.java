@@ -1,4 +1,4 @@
-package pruebascurso;
+package com.jhonny.reactive.demoreactivomitocode.pruebascurso;
 
 import lombok.*;
 

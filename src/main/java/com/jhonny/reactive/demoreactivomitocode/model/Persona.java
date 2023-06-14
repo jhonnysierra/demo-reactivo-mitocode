@@ -1,4 +1,4 @@
-package model;
+package com.jhonny.reactive.demoreactivomitocode.model;
 
 import lombok.*;
 
