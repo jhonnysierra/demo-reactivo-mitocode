@@ -1,7 +1,6 @@
 package com.jhonny.reactive.demoreactivomitocode.routerconfig;
 
 import com.jhonny.reactive.demoreactivomitocode.controller.PersonaHandler;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -16,11 +15,15 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
  * Clase que permite administrar las rutas de la aplicacion
  */
 @Configuration
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class RouterConfig {
 
 
     private final PersonaHandler personaHandler;
+
+    public RouterConfig(PersonaHandler personaHandler) {
+        this.personaHandler = personaHandler;
+    }
 
     /**
      * Funcion que permite asignar la ruta a una funcion del controlador

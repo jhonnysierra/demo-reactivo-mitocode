@@ -18,9 +18,9 @@ public class DemoReactivoMitocodeApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		PruebasCurso pruebasCurso = new PruebasCurso();
 
-		//pruebasCurso.combinaciones();
+		pruebasCurso.combinaciones();
 
-		pruebasCurso.convertirFluxMono();
+		pruebasCurso.convertirFluxMonoFlux();
 
 		pruebasCurso.opeTransformacion();
 	}

@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PruebasCurso {
@@ -28,6 +29,8 @@ public class PruebasCurso {
     }
 
     public void combinaciones() {
+        log.info("OPERADORES DE COMBINACIÓN");
+
         List<Persona> personas1 = new ArrayList<>();
         personas1.add(Persona.builder()
                 .idPersona(1)
@@ -47,6 +50,7 @@ public class PruebasCurso {
         Flux<Persona> personaFlux1 = Flux.fromIterable(personas1);
         Flux<Persona> personaFlux2 = Flux.fromIterable(personas2);
 
+        log.info("Combinaciones con flux");
         Flux.zip(personaFlux1, personaFlux2)
                 .subscribe(x -> {
                     log.info(String.format("Tupla 1 %s", x.getT1().toString()));
@@ -64,7 +68,7 @@ public class PruebasCurso {
 
         userFlux.subscribe(System.out::println);
 
-
+        log.info("Combinaciones con Mono");
         // Ejemplos de combinaciones con Mono
 
         Mono<Persona> monoPersona1 = Mono.just(Persona.builder()
@@ -78,21 +82,41 @@ public class PruebasCurso {
                 .subscribe(x -> log.info(x.getT1().toString()));
     }
 
-    public void convertirFluxMono() {
+    public void convertirFluxMonoFlux() {
         /*
          * Al convertir de Flux a Mono se produce un unico elemento que contiene
          * todos los elementos de la lista en un aray
          */
-
+        log.info("Convertir mono a flux");
         personasFlux
                 .subscribe(x -> log.info(x.toString()));
 
-        personasFlux.collectList()
+        log.info("Convertir Flux a Mono");
+        Mono<List<Persona>> monoPersonaList = personasFlux.collectList();
+        monoPersonaList
                 .subscribe(x -> {
                             log.info(String.format("Flux a Mono: %s", x.toString()));
                             log.info(String.format("Flux a Mono: Tamaño %s", x.size()));
                         }
                 );
+
+        log.info("Convertir lista de lista en flujo a una sola lista");
+        Flux<List<Elemento>> flux = Flux.just(
+                Arrays.asList(new Elemento("elem1"), new Elemento("elem2")),
+                Arrays.asList(new Elemento("elem3"), new Elemento("elem4")),
+                Arrays.asList(new Elemento("elem5"), new Elemento("elem6"))
+        );
+
+        Flux<Elemento> resultadoFlux = flux.doOnNext(elementos -> log.info(String.format("Elemento inicial flux: %s", elementos.toString())))
+                .flatMap(lista -> Flux.fromIterable(lista))
+                .doOnNext(elemento -> log.info(String.format("Elemento final flux: %s", elemento.toString())));
+
+        List<Elemento> resultadoLista = resultadoFlux.collectList().block();
+
+        assert resultadoLista != null;
+
+        log.info(String.format("Elemento final flux: %s", resultadoLista.toString()));
+
     }
 
     public void opeTransformacion() {
@@ -116,8 +140,8 @@ public class PruebasCurso {
         log.info("Operaciones de transformacón con Mono Map");
 
         Mono.just(Persona.builder()
-                .idPersona(7)
-                .nombre("Jhon").build())
+                        .idPersona(7)
+                        .nombre("Jhon").build())
                 .map(persona -> persona.getNombre() + " Map")
                 .subscribe(log::info);
 
@@ -127,7 +151,7 @@ public class PruebasCurso {
                         .idPersona(7)
                         .nombre("Jhon").build())
                 .flatMap(PruebasCurso::getPersonaMono)
-                .subscribe(result-> log.info(result.toString()));
+                .subscribe(result -> log.info(result.toString()));
     }
 
     @NotNull
