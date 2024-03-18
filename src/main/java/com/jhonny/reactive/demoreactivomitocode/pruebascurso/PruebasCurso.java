@@ -79,7 +79,11 @@ public class PruebasCurso {
                 .nombre("Laura").build());
 
         Mono.zip(monoPersona1, monoPersona2)
-                .subscribe(x -> log.info(x.getT1().toString()));
+                .subscribe(x -> {
+                    log.info(x.getT1().toString());
+                    log.info(x.getT2().toString());
+                });
+        log.info("-------------------------");
     }
 
     public void convertirFluxMonoFlux() {
@@ -90,6 +94,7 @@ public class PruebasCurso {
         log.info("Convertir mono a flux");
         personasFlux
                 .subscribe(x -> log.info(x.toString()));
+        log.info("-------------------------");
 
         log.info("Convertir Flux a Mono");
         Mono<List<Persona>> monoPersonaList = personasFlux.collectList();
@@ -108,14 +113,14 @@ public class PruebasCurso {
         );
 
         Flux<Elemento> resultadoFlux = flux.doOnNext(elementos -> log.info(String.format("Elemento inicial flux: %s", elementos.toString())))
-                .flatMap(lista -> Flux.fromIterable(lista))
+                .flatMap(Flux::fromIterable)
                 .doOnNext(elemento -> log.info(String.format("Elemento final flux: %s", elemento.toString())));
 
         List<Elemento> resultadoLista = resultadoFlux.collectList().block();
 
         assert resultadoLista != null;
 
-        log.info(String.format("Elemento final flux: %s", resultadoLista.toString()));
+        log.info("Elemento final flux: {}", resultadoLista);
 
     }
 
